@@ -9,7 +9,7 @@ import { FaTrash, FaEdit } from 'react-icons/fa';
 import './Task.css'
 
 
-function Task({ dataObjects,handleEdit,handleDelete,handleCheckbox}) {
+function Task({ dataObjects,handleEdit,handleDelete,handleTaskComplete}) {
   const [open, setOpen] = useState('');
 
   const toggle = (id) => {
@@ -39,7 +39,7 @@ function Task({ dataObjects,handleEdit,handleDelete,handleCheckbox}) {
                   &nbsp;
                   <FaEdit className="icon" onClick={() =>handleEdit(item) } />
                   &nbsp;
-                  <Input type="checkbox" onChange={(e) => handleCheckbox(e, item)} />
+                  <Input type="checkbox" onChange={(e) => handleTaskComplete(e, item)} />
                 </div>
             
             </AccordionHeader>
@@ -50,7 +50,7 @@ function Task({ dataObjects,handleEdit,handleDelete,handleCheckbox}) {
           </div>
         ))}
       </Accordion>
-      {dataObjects.length===0 && <div>No task added at the moment</div>}
+      {dataObjects.length===0 && <h6>No task added at the moment</h6>}
 
     </div>
   )

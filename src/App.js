@@ -10,14 +10,13 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 function App() {
-  const[addTaskModal,setAddTaskModal]=useState(false)
-  const[dataObj,setDataObj]=useState({Task:"",Description:""})
-  const[dataObjects,setDataObjects]=useState([])
-  const[isEdit,setIsIdit]=useState(false)
-  // const taskList=[]
-  // const [state, dispatch] = useReducer(reducer, taskList);
+  const[addTaskModal,setAddTaskModal]=useState(false)//decides weather to open modal 
+  const[dataObj,setDataObj]=useState({Task:"",Description:""}) //holds one single task
+  const[dataObjects,setDataObjects]=useState([]) //holds array of tasks 
+  const[isEdit,setIsIdit]=useState(false) // decides weather user is editing previously created task
+  const [completedCount, setCompletedCount] = useState(0); //gives number of completed tasks
 
-  const toggle = () => setAddTaskModal(!addTaskModal);
+  const toggle = () => setAddTaskModal(!addTaskModal);//sets value of addTaskModal
 
 
   
@@ -46,33 +45,47 @@ function App() {
   setDataObj(value)  
   setIsIdit(true)
   toggle()
-
-
-
   }
+
+  function validateTask(){
+  //validation Task name and Description field   
+  if(dataObj.Task.length===0){
+    toast.error("Task name is mandatory");
+    return false
+  }
+  else if(dataObj.Description.length===0){
+    toast.error("Task description is mandatory");
+    return false
+  }  
+  return true
+  }
+
+
 
   function onSave() {
     //save for new and pre-existing task
-    if (isEdit) {
-      const updatedDataObjects = dataObjects.map((data) =>
-      data.id === dataObj.id ? dataObj : data
-    );
-    setDataObjects(updatedDataObjects);
-    setDataObj({ Task: "", Description: "" });
-    setIsIdit(false)
-    toggle();
+    if(validateTask()) { 
+      if (isEdit) {
+        const updatedDataObjects = dataObjects.map((data) =>
+        data.id === dataObj.id ? dataObj : data
+      );
+      setDataObjects(updatedDataObjects);
+      setDataObj({ Task: "", Description: "" });
+      setIsIdit(false)
+      toggle();
 
-    } else {
-      setDataObjects((prevDataObjects) => [...prevDataObjects, { ...dataObj, id: uuidv4() }]);
-      setDataObj({ Task: "", Description: "" })
-      toggle()
-    }
-  }
+      } else {
+        setDataObjects((prevDataObjects) => [...prevDataObjects, { ...dataObj, id: uuidv4() }]);
+        setDataObj({ Task: "", Description: "" })
+        toggle()
+      }
+  }}
 
-  function handleCheckbox(e,value){
+  function handleTaskComplete(e,value){
    //use to display success message and delete that task 
   handleDelete(value.id)
   toast.success(`Task ${value.Task} completed!`);
+  setCompletedCount(completedCount+1)
 
   }
 
@@ -98,12 +111,19 @@ function App() {
   }
   return (
     <div className="App">
-      Todo List<br/><br/>
+    <h1 className="todo-title">Todo List</h1>
+      <div className="task-counter">
+        <span className="completed-counter">
+          Completed: {completedCount}
+        </span>
+        <span className="pending-counter">Pending: {dataObjects.length}</span>
+      </div>
+      <br/><br/>
       <Button className="taskbutton"color="primary" size="" onClick={toggle}>Add Task </Button>
       {addMoreModal()}
       <br/><br/><br/>
-      <ToastContainer />
-      <Task dataObjects={dataObjects} handleDelete={handleDelete} handleEdit={handleEdit} handleCheckbox={handleCheckbox}></Task>
+      <ToastContainer autoClose={2000} />
+      <Task dataObjects={dataObjects} handleDelete={handleDelete} handleEdit={handleEdit} handleTaskComplete={handleTaskComplete}></Task>
     </div>
   );
 }

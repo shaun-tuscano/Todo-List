@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
   width: 100%;
   height: 1000px;
@@ -8,4 +8,54 @@
 .taskbutton{
 padding: 10px;
 
+} */
+
+.App {
+  text-align: center;
+  padding: 20px;
+}
+
+.taskbutton {
+  margin-bottom: 20px;
+}
+
+.Toastify__toast {
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.Toastify__toast--success {
+  background-color: #43a047;
+}
+
+.Toastify__toast--error {
+  background-color: #f44336;
+}
+
+.Task {
+  margin-top: 20px;
+}
+.todo-title {
+  font-size: 32px; /* Increase the font size */
+  background: linear-gradient(to right, #ff0000, #00ff00, #0000ff); /* Apply multicolor background */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.task-counter {
+  position: absolute;
+  top: 30px;
+  right: 50px;
+  display: flex;
+}
+
+.completed-counter {
+  margin-right: 10px;
+  color: green;
+}
+
+.pending-counter {
+  color: red;
 }
