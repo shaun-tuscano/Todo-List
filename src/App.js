@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState , useEffect} from 'react';
 import './App.css';
 import { Button,Input,Modal,ModalBody,ModalFooter,ModalHeader, Label } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -6,6 +6,7 @@ import Task from './components/Tasks';
 import { v4 as uuidv4 } from 'uuid';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Footer from './components/Footer';
 
 
 
@@ -31,12 +32,28 @@ function App() {
 
     
   }
+  useEffect(() => {
+    // Check if 'dataObjects' is present in local storage
+    const storedDataObjects = sessionStorage.getItem('dataObjects');
+    const storedCompletedTask= sessionStorage.getItem('completedTask');
+    if (storedDataObjects) {
+      // If present, parse and set the state
+      setDataObjects(JSON.parse(storedDataObjects));
+    } else {
+      // If not present, set default empty array
+      setDataObjects([]);
+    }
+  setCompletedCount(storedCompletedTask ? storedCompletedTask :0)  
+
+  }, []);
 
   function handleDelete(value){
     //deletes element which corresponds to partuclar id given in value
     setDataObjects((prevDataObjects) =>
     prevDataObjects.filter((data) => data.id !== value)
   );
+  sessionStorage.setItem('dataObjects', JSON.stringify(dataObjects.filter((data) => data.id !== value)));
+
   }
 
   function handleEdit(value){
@@ -69,12 +86,16 @@ function App() {
         data.id === dataObj.id ? dataObj : data
       );
       setDataObjects(updatedDataObjects);
+      console.log(updatedDataObjects)
+      sessionStorage.setItem('dataObjects', JSON.stringify(updatedDataObjects));
       setDataObj({ Task: "", Description: "" ,Priorty : 0});
       setIsIdit(false)
       toggle();
 
       } else {
-        setDataObjects((prevDataObjects) => [...prevDataObjects, { ...dataObj, id: uuidv4() }]);
+        const item = { ...dataObj, id: uuidv4() }
+         setDataObjects((prevDataObjects) => [...prevDataObjects, item]);
+         sessionStorage.setItem('dataObjects', JSON.stringify([...dataObjects, item]));
         setDataObj({ Task: "", Description: "", Priorty : 0 })
         toggle()
       }
@@ -84,7 +105,9 @@ function App() {
    //use to display success message and delete that task 
   handleDelete(value.id)
   toast.success(`Task ${value.Task} completed!`);
-  setCompletedCount(completedCount+1)
+  const completedTask = parseInt(completedCount)+1
+  sessionStorage.setItem('completedTask', (completedTask));
+  setCompletedCount(completedTask)
 
   }
 
@@ -99,7 +122,7 @@ function App() {
           <Input type='text' name='Description' placeholder='Description'onChange={handleChange} value={dataObj.Description}></Input>
           <br/>
             <Label for="exampleRange">
-              Set Range
+              Set Priority
             </Label>
           <Input type='range' name='Priorty' onChange={handleChange} value={dataObj.Priorty}></Input>
           </ModalBody>
@@ -114,6 +137,7 @@ function App() {
     )
   }
   return (
+    <div>
     <div className="App">
       <div className='header-container'>
       <h1 className="todo-title">Todo List</h1>
@@ -130,6 +154,9 @@ function App() {
       <br/><br/><br/>
       <ToastContainer autoClose={2000} />
       <Task dataObjects={dataObjects} handleDelete={handleDelete} handleEdit={handleEdit} handleTaskComplete={handleTaskComplete}></Task>
+     
+    </div>
+     <Footer/>
     </div>
   );
 }

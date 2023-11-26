@@ -3,16 +3,17 @@ cursor: pointer;
 
 
 }
-.accordion-container {
-    margin-bottom: 20px;
-    width: 50%; /* Set the width to 50% */
-  margin-left: auto; /* Center the accordion horizontally */
-  margin-right: auto;
-}
+
 
 .card-container{
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+
+}
+
+.card-description{
+height: 10vh;
+overflow-y: auto;
 
 }
 
