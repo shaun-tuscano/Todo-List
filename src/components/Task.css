@@ -10,22 +10,41 @@ cursor: pointer;
   margin-right: auto;
 }
 
+.card-container{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+
+}
+
+@media screen and (max-width: 1200px) {
+  .card-container {
+  max-width: 90%;
+  margin: auto; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  }
+}
+
+
   
-.accordion-container:last-child {
+.card-container:last-child {
     margin-bottom: 0;
 }
   
-.accordion-container .icons-container {
+.card-container .icons-container {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
 }
   
-.accordion-container .icons-container .icon {
+.card-container .icons-container .icon {
     margin-left: 10px;
     cursor: pointer;
 }
   
-  .accordion-container .icons-container input[type="checkbox"] {
+  .card-container .icons-container input[type="checkbox"] {
     margin-left: 10px;
+    margin-bottom: 4px;
   }
   

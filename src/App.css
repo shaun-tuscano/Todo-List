@@ -59,3 +59,14 @@ padding: 10px;
 .pending-counter {
   color: red;
 }
+@media screen and (max-width: 740px) {
+  .header-container{
+  display: flex;
+  align-items: center;
+  flex-direction: column;  
+  }
+  .task-counter{
+  position: relative;
+  right: 0px;
+  }
+}

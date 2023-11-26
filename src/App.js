@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './App.css';
-import { Button,Input,Modal,ModalBody,ModalFooter,ModalHeader } from 'reactstrap';
+import { Button,Input,Modal,ModalBody,ModalFooter,ModalHeader, Label } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import Task from './components/Tasks';
 import { v4 as uuidv4 } from 'uuid';
@@ -11,7 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const[addTaskModal,setAddTaskModal]=useState(false)//decides weather to open modal 
-  const[dataObj,setDataObj]=useState({Task:"",Description:""}) //holds one single task
+  const[dataObj,setDataObj]=useState({Task:"",Description:"",Priorty:0}) //holds one single task
   const[dataObjects,setDataObjects]=useState([]) //holds array of tasks 
   const[isEdit,setIsIdit]=useState(false) // decides weather user is editing previously created task
   const [completedCount, setCompletedCount] = useState(0); //gives number of completed tasks
@@ -24,7 +24,6 @@ function App() {
     //use to set dataobj for add task button
     const name = e.target.name;
     const value = e.target.value;
-  
     setDataObj((prevState) => ({
       ...prevState,
       [name]: value,
@@ -70,13 +69,13 @@ function App() {
         data.id === dataObj.id ? dataObj : data
       );
       setDataObjects(updatedDataObjects);
-      setDataObj({ Task: "", Description: "" });
+      setDataObj({ Task: "", Description: "" ,Priorty : 0});
       setIsIdit(false)
       toggle();
 
       } else {
         setDataObjects((prevDataObjects) => [...prevDataObjects, { ...dataObj, id: uuidv4() }]);
-        setDataObj({ Task: "", Description: "" })
+        setDataObj({ Task: "", Description: "", Priorty : 0 })
         toggle()
       }
   }}
@@ -98,12 +97,17 @@ function App() {
           <Input type='text' name='Task' placeholder='Task' onChange={handleChange} value={dataObj.Task}></Input> 
           <br/>
           <Input type='text' name='Description' placeholder='Description'onChange={handleChange} value={dataObj.Description}></Input>
+          <br/>
+            <Label for="exampleRange">
+              Set Range
+            </Label>
+          <Input type='range' name='Priorty' onChange={handleChange} value={dataObj.Priorty}></Input>
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={onSave}>Save</Button>{' '}
-            <Button color="secondary" onClick={toggle}>
+          <Button color="secondary" onClick={toggle}>
               Cancel
             </Button>
+            <Button color="primary" onClick={onSave}>Save</Button>{' '}
           </ModalFooter>
         </Modal>
       </div>
@@ -111,12 +115,14 @@ function App() {
   }
   return (
     <div className="App">
-    <h1 className="todo-title">Todo List</h1>
+      <div className='header-container'>
+      <h1 className="todo-title">Todo List</h1>
       <div className="task-counter">
         <span className="completed-counter">
           Completed: {completedCount}
         </span>
         <span className="pending-counter">Pending: {dataObjects.length}</span>
+      </div>
       </div>
       <br/><br/>
       <Button className="taskbutton"color="primary" size="" onClick={toggle}>Add Task </Button>
