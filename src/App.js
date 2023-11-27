@@ -17,7 +17,11 @@ function App() {
   const[isEdit,setIsIdit]=useState(false) // decides weather user is editing previously created task
   const [completedCount, setCompletedCount] = useState(0); //gives number of completed tasks
 
-  const toggle = () => setAddTaskModal(!addTaskModal);//sets value of addTaskModal
+  const toggle = (isCancel) => {
+    setAddTaskModal(!addTaskModal);
+    if(isCancel)
+    {setDataObj({ Task: "", Description: "" ,Priorty : 0});}  
+  }//sets value of addTaskModal
 
 
   
@@ -69,8 +73,8 @@ function App() {
     toast.error("Task name is mandatory");
     return false
   }
-  else if(dataObj.Description.length===0){
-    toast.error("Task description is mandatory");
+  else if(dataObj.Priorty === 0){
+    toast.error("Task Priority is mandatory");
     return false
   }  
   return true
@@ -114,8 +118,8 @@ function App() {
   function addMoreModal() {
     return (
       <div >
-        <Modal isOpen={addTaskModal} toggle={toggle} >
-          <ModalHeader toggle={toggle}>Add Task</ModalHeader>
+        <Modal isOpen={addTaskModal} toggle={toggle} centered >
+          <ModalHeader toggle={()=>toggle()}>Add Task</ModalHeader>
           <ModalBody>
           <Input type='text' name='Task' placeholder='Task' onChange={handleChange} value={dataObj.Task}></Input> 
           <br/>
@@ -127,7 +131,7 @@ function App() {
           <Input type='range' name='Priorty' onChange={handleChange} value={dataObj.Priorty}></Input>
           </ModalBody>
           <ModalFooter>
-          <Button color="secondary" onClick={toggle}>
+          <Button color="secondary" onClick={()=>toggle(true)}>
               Cancel
             </Button>
             <Button color="primary" onClick={onSave}>Save</Button>{' '}

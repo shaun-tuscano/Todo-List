@@ -12,7 +12,7 @@ function Task({ dataObjects, handleEdit, handleDelete, handleTaskComplete }) {
 
 
   const handlecolour = (Priority) => {
-    const colourToUse = Priority >= 90 ? "danger" : Priority >= 50 ? "warning" : "info"
+    const colourToUse = Priority >= 80 ? "danger" : Priority >= 50 ? "warning" : "info"
     return colourToUse
   }
 
@@ -41,9 +41,11 @@ function Task({ dataObjects, handleEdit, handleDelete, handleTaskComplete }) {
             </CardBody>
             <CardFooter >
               <div className='icons-container'>
-                <Button color="success" onClick={(e) => handleTaskComplete(e, item)}>
-                  success
+                <div style={{marginRight: 16 }}>
+                <Button color="success"  onClick={(e) => handleTaskComplete(e, item)}>
+                  Done
                 </Button>
+                </div>
                 <div>
                   &nbsp;&nbsp;&nbsp;&nbsp;
                   <FaTrash className="icon" onClick={() => handleDelete(item.id)} />
