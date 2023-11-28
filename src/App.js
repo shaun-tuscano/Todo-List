@@ -16,6 +16,7 @@ function App() {
   const[dataObjects,setDataObjects]=useState([]) //holds array of tasks 
   const[isEdit,setIsIdit]=useState(false) // decides weather user is editing previously created task
   const [completedCount, setCompletedCount] = useState(0); //gives number of completed tasks
+  const[resetModalToggle,setResetModalToggle]=useState(false)//decides weather to open modal 
 
   const toggle = (isCancel) => {
     setAddTaskModal(!addTaskModal);
@@ -23,7 +24,9 @@ function App() {
     {setDataObj({ Task: "", Description: "" ,Priorty : 0});}  
   }//sets value of addTaskModal
 
-
+  const toggleForReset=()=> {
+    setResetModalToggle(!resetModalToggle);
+  }
   
   function handleChange(e){
     //use to set dataobj for add task button
@@ -38,8 +41,8 @@ function App() {
   }
   useEffect(() => {
     // Check if 'dataObjects' is present in local storage
-    const storedDataObjects = sessionStorage.getItem('dataObjects');
-    const storedCompletedTask= sessionStorage.getItem('completedTask');
+    const storedDataObjects = localStorage.getItem('dataObjects');
+    const storedCompletedTask= localStorage.getItem('completedTask');
     if (storedDataObjects) {
       // If present, parse and set the state
       setDataObjects(JSON.parse(storedDataObjects));
@@ -56,7 +59,7 @@ function App() {
     setDataObjects((prevDataObjects) =>
     prevDataObjects.filter((data) => data.id !== value)
   );
-  sessionStorage.setItem('dataObjects', JSON.stringify(dataObjects.filter((data) => data.id !== value)));
+  localStorage.setItem('dataObjects', JSON.stringify(dataObjects.filter((data) => data.id !== value)));
 
   }
 
@@ -91,7 +94,7 @@ function App() {
       );
       setDataObjects(updatedDataObjects);
       console.log(updatedDataObjects)
-      sessionStorage.setItem('dataObjects', JSON.stringify(updatedDataObjects));
+      localStorage.setItem('dataObjects', JSON.stringify(updatedDataObjects));
       setDataObj({ Task: "", Description: "" ,Priorty : 0});
       setIsIdit(false)
       toggle();
@@ -99,7 +102,7 @@ function App() {
       } else {
         const item = { ...dataObj, id: uuidv4() }
          setDataObjects((prevDataObjects) => [...prevDataObjects, item]);
-         sessionStorage.setItem('dataObjects', JSON.stringify([...dataObjects, item]));
+         localStorage.setItem('dataObjects', JSON.stringify([...dataObjects, item]));
         setDataObj({ Task: "", Description: "", Priorty : 0 })
         toggle()
       }
@@ -110,11 +113,41 @@ function App() {
   handleDelete(value.id)
   toast.success(`Task ${value.Task} completed!`);
   const completedTask = parseInt(completedCount)+1
-  sessionStorage.setItem('completedTask', (completedTask));
+  localStorage.setItem('completedTask', (completedTask));
   setCompletedCount(completedTask)
 
   }
+  function resetHandler(){
+    localStorage.setItem('completedTask', ([]));  
+    localStorage.setItem('dataObjects', ([]));
+    setDataObjects([])
+    setCompletedCount(0)
+    toggleForReset()
 
+
+  }
+  function resetmodal(){
+    return (
+      <div >
+        <Modal isOpen={resetModalToggle} toggle={toggleForReset} centered >
+          <ModalHeader toggle={()=>toggleForReset()}>Reset Modal</ModalHeader>
+          <ModalBody>
+          All your task will get deleted . are you sure you want to reset?
+          </ModalBody>
+          <ModalFooter>
+          <Button color="secondary" onClick={()=>toggleForReset()}>
+              Cancel
+            </Button>
+            <Button color="primary" onClick={resetHandler}>Reset</Button>{' '}
+          </ModalFooter>
+        </Modal>
+      </div>
+    )  
+
+
+
+
+  }
   function addMoreModal() {
     return (
       <div >
@@ -152,9 +185,15 @@ function App() {
         <span className="pending-counter">Pending: {dataObjects.length}</span>
       </div>
       </div>
-      <br/><br/>
+      <br/>
+
+      <div className='button-container'>
+      <Button className="taskbutton"color="primary" size="" onClick={toggleForReset}>Reset</Button>  
       <Button className="taskbutton"color="primary" size="" onClick={toggle}>Add Task </Button>
+
+      </div>
       {addMoreModal()}
+      {resetmodal()}
       <br/><br/><br/>
       <ToastContainer autoClose={2000} />
       <Task dataObjects={dataObjects} handleDelete={handleDelete} handleEdit={handleEdit} handleTaskComplete={handleTaskComplete}></Task>

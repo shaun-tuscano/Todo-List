@@ -16,9 +16,10 @@ function Task({ dataObjects, handleEdit, handleDelete, handleTaskComplete }) {
     return colourToUse
   }
 
+
   return (
     <Fragment>
-      <div className='card-container'>
+      {dataObjects.length!== 0 && <div className='card-container'>
 
         {dataObjects.map((item) => (
           <Card
@@ -58,7 +59,7 @@ function Task({ dataObjects, handleEdit, handleDelete, handleTaskComplete }) {
           </Card>
         ))}
 
-      </div>
+      </div>}
       {dataObjects.length === 0 && <h6>No task added at the moment</h6>}
     </Fragment>
   )

@@ -75,4 +75,15 @@ padding: 10px;
   position: relative;
   right: 0px;
   }
+  .button-container{
+  padding: 1rem 1rem !important;  
+
+  }
+}
+
+.button-container{
+  display: flex;
+  justify-content: space-between;
+  padding: 0rem 3rem;
+
 }
