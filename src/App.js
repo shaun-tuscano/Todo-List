@@ -248,7 +248,7 @@ function App() {
       </div>
       {addMoreModal()}
       {resetmodal()}
-      <br/><br/><br/>
+      <br/>
       <Tabs onPendingClicked={tabopen}/>
       <ToastContainer autoClose={2000} />
       <Task activeTab={tabName} dataObjects={tabName==="pending" ? dataObjects : tabName==="completed" ? completedTask : [] } handleDelete={handleDelete} handleEdit={handleEdit} handleTaskComplete={handleTaskComplete}></Task>

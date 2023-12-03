@@ -22,11 +22,11 @@ overflow-y: auto;
 
 @media screen and (max-width: 1200px) {
   .card-container {
-  max-width: 90%;
   margin: auto; 
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 16px;
   }
 }
 

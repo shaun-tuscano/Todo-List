@@ -25,6 +25,7 @@ padding: 10px;
   margin-bottom: 20px;
   margin-left: 12px;
   border-radius: 24px !important;
+  width: 90px;
 }
 .task-btn{
   border-radius: 24px !important;
@@ -74,11 +75,14 @@ padding: 10px;
   .header-container{
   display: flex;
   align-items: center;
-  flex-direction: column;  
+  /* flex-direction: column;   */
   }
   .task-counter{
-  position: relative;
-  right: 0px;
+  position: absolute;
+  right: 35px;
+  }
+  .todo-title{
+  margin-left: 16px;  
   }
   .button-container{
   padding: 1rem 1rem !important;  
