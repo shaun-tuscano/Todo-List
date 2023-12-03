@@ -6,7 +6,7 @@ import { FaTrash, FaEdit } from 'react-icons/fa';
 import './Task.css'
 
 
-function Task({ dataObjects, handleEdit, handleDelete, handleTaskComplete }) {
+function Task({ dataObjects, handleEdit, handleDelete, handleTaskComplete , activeTab }) {
 
 
 
@@ -16,7 +16,11 @@ function Task({ dataObjects, handleEdit, handleDelete, handleTaskComplete }) {
     return colourToUse
   }
 
+  function displaymsg(){
+   return activeTab === "pending" ? <h6>No pending task at the moment</h6> : activeTab === "completed" ? <h6>No task completed at the moment</h6> : <h6>This feature is not yet implemented</h6>
 
+
+  }
   return (
     <Fragment>
       {dataObjects.length!== 0 && <div className='card-container'>
@@ -25,7 +29,7 @@ function Task({ dataObjects, handleEdit, handleDelete, handleTaskComplete }) {
           <Card
             key={item.id}
             className="my-2 "
-            color={handlecolour(item.Priorty)}
+            color={activeTab=== "pending" ?handlecolour(item.Priorty) : "success"}
             inverse
             style={{
               width: '18rem'
@@ -41,7 +45,7 @@ function Task({ dataObjects, handleEdit, handleDelete, handleTaskComplete }) {
               </CardText>
             </CardBody>
             <CardFooter >
-              <div className='icons-container'>
+              {activeTab=== "pending" && <div className='icons-container'>
                 <div style={{marginRight: 16 }}>
                 <Button color="success"  onClick={(e) => handleTaskComplete(e, item)}>
                   Done
@@ -54,13 +58,13 @@ function Task({ dataObjects, handleEdit, handleDelete, handleTaskComplete }) {
                   <FaEdit className="icon" onClick={() => handleEdit(item)} />
                   &nbsp;
                 </div>
-              </div>
+              </div>}
             </CardFooter>
           </Card>
         ))}
 
       </div>}
-      {dataObjects.length === 0 && <h6>No task added at the moment</h6>}
+      {dataObjects.length === 0 && <div className='nodata-container'>{displaymsg()}</div>}
     </Fragment>
   )
 

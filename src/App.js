@@ -7,16 +7,20 @@ import { v4 as uuidv4 } from 'uuid';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Footer from './components/Footer';
+import Tabs from './components/tabs';
 
 
 
 function App() {
   const[addTaskModal,setAddTaskModal]=useState(false)//decides weather to open modal 
   const[dataObj,setDataObj]=useState({Task:"",Description:"",Priorty:0}) //holds one single task
-  const[dataObjects,setDataObjects]=useState([]) //holds array of tasks 
+  const[dataObjects,setDataObjects]=useState([]) //holds array of pending tasks 
+  const[completedTask,setCompletedTask]=useState([]) //holds array of completed tasks 
   const[isEdit,setIsIdit]=useState(false) // decides weather user is editing previously created task
   const [completedCount, setCompletedCount] = useState(0); //gives number of completed tasks
   const[resetModalToggle,setResetModalToggle]=useState(false)//decides weather to open modal 
+  const[pendingTask,setPendingTask]= useState(0)
+  const[tabName, setTabName]=useState("pending")
 
   const toggle = (isCancel) => {
     setAddTaskModal(!addTaskModal);
@@ -39,18 +43,53 @@ function App() {
 
     
   }
-  useEffect(() => {
-    // Check if 'dataObjects' is present in local storage
+  function tabopen(tabname){
+    setTabName(tabname)
+  // if(tabname === "completed"){
+  //   // const storedCompletedTask= JSON.parse(localStorage.getItem('completedTask'));  
+  //   // setCompletedTask(completedTask)
+
+  // }
+   if(tabname === "pending"){
     const storedDataObjects = localStorage.getItem('dataObjects');
-    const storedCompletedTask= localStorage.getItem('completedTask');
+
     if (storedDataObjects) {
       // If present, parse and set the state
       setDataObjects(JSON.parse(storedDataObjects));
-    } else {
+    }
+     else {
       // If not present, set default empty array
       setDataObjects([]);
     }
-  setCompletedCount(storedCompletedTask ? storedCompletedTask :0)  
+
+  }
+  else{
+
+
+  }  
+
+
+
+  }
+  useEffect(() => {
+    // Check if 'dataObjects' is present in local storage
+    const storedDataObjects = localStorage.getItem('dataObjects');
+    const storedCompletedTask=localStorage.getItem('completedTask') ;
+
+    if (storedDataObjects) {
+      // If present, parse and set the state
+      setDataObjects(JSON.parse(storedDataObjects));
+      setPendingTask(JSON.parse(storedDataObjects).length)
+    }
+     else {
+      // If not present, set default empty array
+      setDataObjects([]);
+    }
+    if(storedCompletedTask){
+      setCompletedTask(JSON.parse(storedCompletedTask));  
+      setCompletedCount(JSON.parse(storedCompletedTask).length)
+    }
+    
 
   }, []);
 
@@ -60,6 +99,7 @@ function App() {
     prevDataObjects.filter((data) => data.id !== value)
   );
   localStorage.setItem('dataObjects', JSON.stringify(dataObjects.filter((data) => data.id !== value)));
+  setPendingTask(pendingTask-1)
 
   }
 
@@ -104,23 +144,38 @@ function App() {
          setDataObjects((prevDataObjects) => [...prevDataObjects, item]);
          localStorage.setItem('dataObjects', JSON.stringify([...dataObjects, item]));
         setDataObj({ Task: "", Description: "", Priorty : 0 })
+        setPendingTask(pendingTask+1)
         toggle()
       }
   }}
 
-  function handleTaskComplete(e,value){
-   //use to display success message and delete that task 
-  handleDelete(value.id)
-  toast.success(`Task ${value.Task} completed!`);
-  const completedTask = parseInt(completedCount)+1
-  localStorage.setItem('completedTask', (completedTask));
-  setCompletedCount(completedTask)
+  function handleTaskComplete(e, value) {
 
+    let storedCompletedTask=localStorage.getItem('completedTask') ;
+
+    if (storedCompletedTask) {
+    storedCompletedTask = JSON.parse(storedCompletedTask)
+    storedCompletedTask.push(value);
+    localStorage.setItem('completedTask', JSON.stringify(storedCompletedTask));
+    setCompletedTask(storedCompletedTask) 
+    setCompletedCount(storedCompletedTask.length); 
+    setPendingTask(pendingTask-1)
+    }
+     else {
+      setCompletedCount(1);
+      localStorage.setItem('completedTask', JSON.stringify([value]));
+      setCompletedTask([value]);
+    }
+  
+    handleDelete(value.id);
+    toast.success(`Task ${value.Task} completed!`);
   }
   function resetHandler(){
     localStorage.setItem('completedTask', ([]));  
     localStorage.setItem('dataObjects', ([]));
     setDataObjects([])
+    setCompletedTask([])
+    setPendingTask(0)
     setCompletedCount(0)
     toggleForReset()
 
@@ -164,15 +219,16 @@ function App() {
           <Input type='range' name='Priorty' onChange={handleChange} value={dataObj.Priorty}></Input>
           </ModalBody>
           <ModalFooter>
-          <Button color="secondary" onClick={()=>toggle(true)}>
+          <Button color="secondary" className="task-btn" onClick={()=>toggle(true)}>
               Cancel
             </Button>
-            <Button color="primary" onClick={onSave}>Save</Button>{' '}
+            <Button color="primary" className="task-btn" onClick={onSave}>Save</Button>{' '}
           </ModalFooter>
         </Modal>
       </div>
     )
   }
+  
   return (
     <div>
     <div className="App">
@@ -182,23 +238,23 @@ function App() {
         <span className="completed-counter">
           Completed: {completedCount}
         </span>
-        <span className="pending-counter">Pending: {dataObjects.length}</span>
+        <span className="pending-counter">Pending: {pendingTask}</span>
       </div>
       </div>
       <br/>
-
       <div className='button-container'>
       <Button className="taskbutton"color="primary" size="" onClick={toggleForReset}>Reset</Button>  
       <Button className="taskbutton"color="primary" size="" onClick={toggle}>Add Task </Button>
-
       </div>
       {addMoreModal()}
       {resetmodal()}
       <br/><br/><br/>
+      <Tabs onPendingClicked={tabopen}/>
       <ToastContainer autoClose={2000} />
-      <Task dataObjects={dataObjects} handleDelete={handleDelete} handleEdit={handleEdit} handleTaskComplete={handleTaskComplete}></Task>
+      <Task activeTab={tabName} dataObjects={tabName==="pending" ? dataObjects : tabName==="completed" ? completedTask : [] } handleDelete={handleDelete} handleEdit={handleEdit} handleTaskComplete={handleTaskComplete}></Task>
      
     </div>
+    <br/>
      <Footer/>
     </div>
   );

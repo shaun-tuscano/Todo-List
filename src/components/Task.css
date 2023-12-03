@@ -8,7 +8,7 @@ cursor: pointer;
 .card-container{
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  background-color: white;
+  background-color: darkslategrey;
   margin: 16px;
   padding: 16px;
   border-radius: 24px;
@@ -52,3 +52,6 @@ overflow-y: auto;
     margin-bottom: 4px;
   }
   
+.nodata-container{
+margin-top: 10%;
+}  
